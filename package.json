@@ -1,0 +1,29 @@
+{
+  "name": "alche-tools",
+  "version": "0.1.0",
+  "private": true,
+  "description": "个人开发者桌面工具箱",
+  "author": "",
+  "main": "out/main/index.js",
+  "engines": { "node": ">=22.12.0" },
+  "scripts": {
+    "dev": "electron-vite dev",
+    "typecheck": "vue-tsc --noEmit",
+    "build": "npm run typecheck && electron-vite build",
+    "preview": "electron-vite preview",
+    "test:smoke": "electron scripts/smoke.cjs",
+    "pack": "npm run build && electron-builder --dir",
+    "dist:win": "npm run build && electron-builder --win nsis"
+  },
+  "dependencies": { "vue": "^3.5.0" },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "@vitejs/plugin-vue": "^6.0.0",
+    "electron": "45.3.0",
+    "electron-builder": "^26.0.0",
+    "electron-vite": "^5.0.0",
+    "typescript": "^5.9.0",
+    "vite": "^7.0.0",
+    "vue-tsc": "^3.0.0"
+  }
+}

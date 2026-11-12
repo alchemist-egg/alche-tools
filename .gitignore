@@ -1,0 +1,20 @@
+# npm dependencies and cache
+node_modules/
+/.npm-cache/
+
+# Electron build and packaging output
+/out/
+/dist/
+
+# Logs and TypeScript build cache
+*.log
+*.tsbuildinfo
+
+# Local environment files
+.env
+.env.*
+!.env.example
+
+# Operating system files
+.DS_Store
+Thumbs.db
