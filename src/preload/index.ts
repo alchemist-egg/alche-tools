@@ -2,6 +2,10 @@ import { contextBridge, ipcRenderer } from 'electron'
 import { IPC_CHANNELS, type DesktopApi } from '../shared/contracts'
 
 const api: DesktopApi = {
+  storage: {
+    getLocation: () => ipcRenderer.invoke(IPC_CHANNELS.storageLocation),
+    changeLocation: mode => ipcRenderer.invoke(IPC_CHANNELS.changeStorageLocation, mode)
+  },
   crypto: { transform: request => ipcRenderer.invoke('crypto:transform', request) },
   http: {
     list: () => ipcRenderer.invoke('http:list'),

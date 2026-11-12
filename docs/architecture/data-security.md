@@ -4,7 +4,7 @@
 
 窗口开启 contextIsolation 和 sandbox，关闭 nodeIntegration，拒绝新窗口、导航和权限申请。IPC 校验来源；响应文本通过 Vue 文本插值显示，不作为 HTML 执行。
 
-HTTP 请求完整配置通过 safeStorage 加密存入 userData/http-requests.enc。系统加密不可用时拒绝写入，Linux basic_text 后端也拒绝写入。列表读取会将解密配置返回可信 renderer，以便编辑，因此不能把此设计描述为“凭据从不进入界面”。
+HTTP 请求完整配置通过 safeStorage 加密存入 [当前存储目录](../operations/data-lifecycle.md) 的 `http-requests.enc`。系统加密不可用时拒绝写入，Linux basic_text 后端也拒绝写入。列表读取会将解密配置返回可信 renderer，以便编辑，因此不能把此设计描述为“凭据从不进入界面”。
 
 保存采用串行队列、临时文件和 rename 替换。读取或解析失败不自动重置原文件。响应正文、Cookie 会话、历史记录均不持久化；目前没有业务日志系统或自动备份。
 

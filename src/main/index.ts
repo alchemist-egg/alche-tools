@@ -1,6 +1,8 @@
 import { registerCrypto } from './modules/crypto'
 import { registerHttp, cancelAll } from './modules/http'
-import { app, BrowserWindow, ipcMain, session } from 'electron'
+import { registerStorage } from './storage-ipc'
+import { app, BrowserWindow, ipcMain, session, type IpcMainInvokeEvent } from 'electron'
+import { mkdirSync } from 'node:fs'
 import { join } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { IPC_CHANNELS, type AppInfo } from '../shared/contracts'
@@ -35,6 +37,15 @@ function createWindow(): void {
   else void mainWindow.loadFile(rendererFile)
 }
 
+if (process.platform === 'win32') {
+  const sessionDirectory = app.getPath('sessionData')
+  const sharedDirectory = join(app.getPath('appData'), 'Alche Tools')
+  mkdirSync(sharedDirectory, { recursive: true })
+  mkdirSync(sessionDirectory, { recursive: true })
+  app.setPath('sessionData', sessionDirectory)
+  app.setPath('userData', sharedDirectory)
+}
+
 if (!app.requestSingleInstanceLock()) {
   app.quit()
 } else {
@@ -57,12 +68,12 @@ if (!app.requestSingleInstanceLock()) {
         electron: process.versions.electron, node: process.versions.node
       }
     })
-    registerHttp(event => {
+    const check = (event: IpcMainInvokeEvent): void => {
       if (!mainWindow || event.sender !== mainWindow.webContents || event.senderFrame !== mainWindow.webContents.mainFrame || event.senderFrame.url !== rendererUrl) throw new Error('Untrusted IPC sender')
-    })
-    registerCrypto(event => {
-      if (!mainWindow || event.sender !== mainWindow.webContents || event.senderFrame !== mainWindow.webContents.mainFrame || event.senderFrame.url !== rendererUrl) throw new Error('Untrusted IPC sender')
-    })
+    }
+    registerStorage(check)
+    registerHttp(check)
+    registerCrypto(check)
     app.on('before-quit', cancelAll)
     createWindow()
     app.on('activate', () => { if (!mainWindow) createWindow() })
